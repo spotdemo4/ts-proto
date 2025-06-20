@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package item.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+message Item {
+  int64 id = 1;
+  string name = 2 [
+    (buf.validate.field).string.min_len = 3
+  ];
+  google.protobuf.Timestamp added = 3;
+  string description = 4;
+  float price = 5;
+  int32 quantity = 6;
+}
+
+service ItemService {
+  rpc GetItem (GetItemRequest) returns (GetItemResponse) {}
+  rpc GetItems (GetItemsRequest) returns (GetItemsResponse) {}
+  rpc CreateItem (CreateItemRequest) returns (CreateItemResponse) {}
+  rpc UpdateItem (UpdateItemRequest) returns (UpdateItemResponse) {}
+  rpc DeleteItem (DeleteItemRequest) returns (DeleteItemResponse) {}
+}
+
+message GetItemRequest {
+  int64 id = 1;
+}
+message GetItemResponse {
+  Item item = 1;
+}
+
+message GetItemsRequest {
+  optional google.protobuf.Timestamp start = 1;
+  optional google.protobuf.Timestamp end = 2;
+  optional string filter = 3;
+  optional int32 limit = 4;
+  optional int32 offset = 5;
+}
+message GetItemsResponse {
+  repeated Item items = 1;
+  int64 count = 2;
+}
+
+message CreateItemRequest {
+  string name = 1;
+  string description = 2;
+  float price = 3;
+  int32 quantity = 4;
+}
+message CreateItemResponse {
+  int64 id = 1;
+  google.protobuf.Timestamp added = 2;
+}
+
+message UpdateItemRequest {
+  int64 id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional float price = 4;
+  optional int32 quantity = 5;
+}
+message UpdateItemResponse {}
+
+message DeleteItemRequest {
+  int64 id = 1;
+}
+message DeleteItemResponse {}
