@@ -3,19 +3,19 @@ syntax = "proto3";
 package user.v1;
 
 message User {
-  int64 id = 1;
+  int32 id = 1;
   string username = 2;
-  optional int64 profile_picture_id = 3;
+  optional int32 profile_picture_id = 3;
 }
 
 service UserService {
-  rpc GetUser (GetUserRequest) returns (GetUserResponse) {}
-  rpc UpdatePassword (UpdatePasswordRequest) returns (UpdatePasswordResponse) {}
-  rpc GetAPIKey (GetAPIKeyRequest) returns (GetAPIKeyResponse) {}
-  rpc UpdateProfilePicture (UpdateProfilePictureRequest) returns (UpdateProfilePictureResponse) {}
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  rpc UpdatePassword(UpdatePasswordRequest) returns (UpdatePasswordResponse) {}
+  rpc GetAPIKey(GetAPIKeyRequest) returns (GetAPIKeyResponse) {}
+  rpc UpdateProfilePicture(UpdateProfilePictureRequest) returns (UpdateProfilePictureResponse) {}
 
-  rpc BeginPasskeyRegistration (BeginPasskeyRegistrationRequest) returns (BeginPasskeyRegistrationResponse) {}
-  rpc FinishPasskeyRegistration (FinishPasskeyRegistrationRequest) returns (FinishPasskeyRegistrationResponse) {}
+  rpc BeginPasskeyRegistration(BeginPasskeyRegistrationRequest) returns (BeginPasskeyRegistrationResponse) {}
+  rpc FinishPasskeyRegistration(FinishPasskeyRegistrationRequest) returns (FinishPasskeyRegistrationResponse) {}
 }
 
 message GetUserRequest {}
@@ -36,7 +36,7 @@ message GetAPIKeyRequest {
   string password = 1;
   string confirm_password = 2;
 }
-message GetAPIKeyResponse { 
+message GetAPIKeyResponse {
   string key = 1;
 }
 
@@ -57,9 +57,3 @@ message FinishPasskeyRegistrationRequest {
   string attestation = 1;
 }
 message FinishPasskeyRegistrationResponse {}
-
-// message BeginPasskeyRegistrationRequest {}
-// message BeginPasskeyRegistrationResponse {}
-
-// message FinishPasskeyRegistrationRequest {}
-// message FinishPasskeyRegistrationResponse {}
