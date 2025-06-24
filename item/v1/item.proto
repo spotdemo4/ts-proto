@@ -7,7 +7,7 @@ import "google/protobuf/timestamp.proto";
 
 message Item {
   int32 id = 1;
-  string name = 2 [(buf.validate.field).string.min_len = 3];
+  string name = 2;
   google.protobuf.Timestamp added = 3;
   string description = 4;
   float price = 5;
