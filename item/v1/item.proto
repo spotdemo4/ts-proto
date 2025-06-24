@@ -54,10 +54,10 @@ message CreateItemResponse {
 
 message UpdateItemRequest {
   int32 id = 1;
-  optional string name = 2;
-  optional string description = 3;
+  optional string name = 2 [(buf.validate.field).string.min_len = 3];
+  optional string description = 3 [(buf.validate.field).string.min_len = 3];
   optional float price = 4;
-  optional int32 quantity = 5;
+  optional int32 quantity = 5 [(buf.validate.field).int32.gte = 0];
 }
 message UpdateItemResponse {}
 
