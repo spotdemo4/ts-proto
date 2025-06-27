@@ -10,6 +10,6 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: bufbuild/buf-setup-action@v1
-      - uses: bufbuild/buf-lint-action@v1
+      - uses: https://github.com/actions/checkout@v4
+      - uses: https://github.com/bufbuild/buf-setup-action@v1
+      - uses: https://github.com/bufbuild/buf-lint-action@v1
