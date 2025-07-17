@@ -39,6 +39,30 @@
             };
           }
       );
+
+    ts-proto = forSystem ({pkgs, ...}:
+      pkgs.stdenv.mkDerivation {
+        name = "ts-proto";
+        src = ./.;
+        nativeBuildInputs = with pkgs; [
+          buf
+        ];
+        doCheck = true;
+        checkPhase = ''
+          HOME=$(pwd)
+          buf lint
+        '';
+        buildPhase = ''
+          HOME=$(pwd)
+          buf dep graph
+        '';
+        installPhase = ''
+          cp -r .cache/buf "$out"
+        '';
+        outputHashAlgo = "sha256";
+        outputHashMode = "recursive";
+        outputHash = "sha256-cE2PiWAJGQYaIThSijO/y1gENlwPnHY49tFIhMNKp9M=";
+      });
   in rec {
     devShells = forSystem ({pkgs, ...}: {
       default = pkgs.mkShell {
@@ -93,32 +117,14 @@
         };
       }
       // {
-        buf = pkgs.stdenv.mkDerivation {
-          name = "buf-check";
-          src = ./.;
-          nativeBuildInputs = with pkgs; [
-            buf
-          ];
-          doCheck = true;
-          checkPhase = ''
-            HOME=$(pwd)
-            buf lint
-          '';
-          buildPhase = ''
-            HOME=$(pwd)
-            buf dep graph
-          '';
-          installPhase = ''
-            cp -r .cache/buf "$out"
-          '';
-          outputHashAlgo = "sha256";
-          outputHashMode = "recursive";
-          outputHash = "sha256-W3141wtpQ4OHrEV+2soKzSiMsFiCVeSShbpOFUASe84=";
-        };
-
+        build = ts-proto."${system}";
         shell = devShells."${system}".default;
       });
 
     formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
+
+    packages = forSystem ({system, ...}: {
+      default = ts-proto."${system}";
+    });
   };
 }
