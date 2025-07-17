@@ -73,7 +73,7 @@
 
         src = fetchBufDeps {
           pkgs = pkgs;
-          hash = "sha256-e3UcfoeYqPn7wsiC9PVUslhJhhwCM958a1wmR6k8wUs=";
+          hash = "sha256-VhtXSigSX6JivdjbtVhhk9mplYWEWs8eTzS3G6ejDpo=";
         };
 
         nativeBuildInputs = with pkgs; [
