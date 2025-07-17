@@ -40,28 +40,55 @@
           }
       );
 
-    ts-proto = forSystem ({pkgs, ...}:
-      pkgs.stdenv.mkDerivation {
-        name = "ts-proto";
-        src = ./.;
+    fetchBufDeps = {
+      pkgs,
+      hash,
+    }:
+      pkgs.stdenv.mkDerivation (finalAttrs: {
+        name = "source";
+        src = pkgs.nix-gitignore.gitignoreSource [] ./.;
+
         nativeBuildInputs = with pkgs; [
           buf
         ];
-        doCheck = true;
-        checkPhase = ''
-          HOME=$(pwd)
-          buf lint
-        '';
+
         buildPhase = ''
           HOME=$(pwd)
           buf dep graph
         '';
         installPhase = ''
-          cp -r .cache/buf "$out"
+          cp -r . "$out"
         '';
+
+        # fixed output derivation
         outputHashAlgo = "sha256";
         outputHashMode = "recursive";
-        outputHash = "sha256-cE2PiWAJGQYaIThSijO/y1gENlwPnHY49tFIhMNKp9M=";
+        outputHash = hash;
+      });
+
+    ts-proto = forSystem ({pkgs, ...}:
+      pkgs.stdenv.mkDerivation {
+        pname = "ts-proto";
+        version = "1.0.0";
+
+        src = fetchBufDeps {
+          pkgs = pkgs;
+          hash = "sha256-e3UcfoeYqPn7wsiC9PVUslhJhhwCM958a1wmR6k8wUs=";
+        };
+
+        nativeBuildInputs = with pkgs; [
+          buf
+        ];
+
+        doCheck = true;
+        checkPhase = ''
+          HOME=$(pwd)
+          buf lint
+        '';
+        dontBuild = true;
+        installPhase = ''
+          touch $out
+        '';
       });
   in rec {
     devShells = forSystem ({pkgs, ...}: {
