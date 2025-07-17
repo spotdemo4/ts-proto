@@ -1,0 +1,22 @@
+{
+	"editor.formatOnSave": true,
+
+	// Proto
+	"[proto]": {
+		"editor.defaultFormatter": "bufbuild.vscode-buf"
+	},
+
+	// Prettier
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+
+	// Nix
+	"nix.enableLanguageServer": true,
+	"nix.serverPath": "nixd",
+	"nix.formatterPath": "alejandra"
+}

@@ -1,0 +1,3 @@
+{
+	"recommendations": ["bufbuild.vscode-buf", "esbenp.prettier-vscode", "jnoortheen.nix-ide"]
+}
