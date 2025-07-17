@@ -99,6 +99,7 @@
           nativeBuildInputs = with pkgs; [
             buf
           ];
+          doCheck = true;
           checkPhase = ''
             HOME=$(pwd)
             buf lint
