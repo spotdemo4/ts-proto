@@ -46,7 +46,14 @@
     }:
       pkgs.stdenv.mkDerivation (finalAttrs: {
         name = "source";
-        src = pkgs.nix-gitignore.gitignoreSource [] ./.;
+        src =
+          pkgs.nix-gitignore.gitignoreSourcePure ''
+            *
+            !buf.yaml
+            !buf.lock
+            !src/
+          ''
+          ./.;
 
         nativeBuildInputs = with pkgs; [
           buf
@@ -56,6 +63,7 @@
           HOME=$(pwd)
           buf dep graph
         '';
+
         installPhase = ''
           cp -r . "$out"
         '';
@@ -73,7 +81,7 @@
 
         src = fetchBufDeps {
           pkgs = pkgs;
-          hash = "sha256-e3UcfoeYqPn7wsiC9PVUslhJhhwCM958a1wmR6k8wUs=";
+          hash = "sha256-iVM+tASM3xGIWFMAqb/og6LxNByFohLL0k7NkPfyhZg=";
         };
 
         nativeBuildInputs = with pkgs; [
