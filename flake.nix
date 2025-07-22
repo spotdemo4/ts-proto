@@ -107,8 +107,8 @@
           renovate
         ];
         shellHook = ''
-          echo "nix flake check --accept-flake-config" > .git/hooks/pre-commit
-          chmod +x .git/hooks/pre-commit
+          echo "nix flake check --accept-flake-config" > .git/hooks/pre-push
+          chmod +x .git/hooks/pre-push
         '';
       };
     });
