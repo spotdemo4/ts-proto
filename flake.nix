@@ -76,10 +76,7 @@
           action-validator
           renovate
         ];
-        shellHook = ''
-          echo "nix flake check --accept-flake-config" > .git/hooks/pre-push
-          chmod +x .git/hooks/pre-push
-        '';
+        shellHook = pkgs.nur.repos.trev.shellhook.ref;
       };
 
       checks =
