@@ -11,7 +11,12 @@
   };
 
   inputs = {
+    systems.url = "systems";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
+    };
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,87 +25,44 @@
 
   outputs = {
     nixpkgs,
+    utils,
     nur,
     ...
-  }: let
-    build-systems = [
-      "x86_64-linux"
-      "aarch64-linux"
-      "aarch64-darwin"
-    ];
-    forSystem = f:
-      nixpkgs.lib.genAttrs build-systems (
-        system:
-          f {
-            inherit system;
-            pkgs = import nixpkgs {
-              inherit system;
-              overlays = [nur.overlays.default];
-            };
-          }
-      );
+  }:
+    utils.lib.eachDefaultSystem (system: let
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [nur.overlays.default];
+      };
 
-    fetchBufDeps = {
-      pkgs,
-      hash,
-    }:
-      pkgs.stdenv.mkDerivation (finalAttrs: {
-        name = "source";
-        src =
-          pkgs.nix-gitignore.gitignoreSourcePure ''
-            *
-            !buf.yaml
-            !buf.lock
-            !src/
-          ''
-          ./.;
-
-        nativeBuildInputs = with pkgs; [
-          buf
-        ];
-
-        buildPhase = ''
-          HOME=$(pwd)
-          buf dep graph
-        '';
-
-        installPhase = ''
-          cp -r . "$out"
-        '';
-
-        # fixed output derivation
-        outputHashAlgo = "sha256";
-        outputHashMode = "recursive";
-        outputHash = hash;
-      });
-
-    ts-proto = forSystem ({pkgs, ...}:
-      pkgs.stdenv.mkDerivation {
+      ts-proto = pkgs.stdenv.mkDerivation (finalAttrs: {
         pname = "ts-proto";
         version = "1.0.0";
-
-        src = fetchBufDeps {
-          pkgs = pkgs;
-          hash = "sha256-iVM+tASM3xGIWFMAqb/og6LxNByFohLL0k7NkPfyhZg=";
-        };
+        src = ./.;
 
         nativeBuildInputs = with pkgs; [
           buf
+          pkgs.nur.repos.trev.lib.buf.configHook
         ];
+
+        bufDeps = pkgs.nur.repos.trev.lib.buf.fetchDeps {
+          inherit (finalAttrs) pname version src;
+          hash = "sha256-W3141wtpQ4OHrEV+2soKzSiMsFiCVeSShbpOFUASe84=";
+        };
+
+        dontBuild = true;
 
         doCheck = true;
         checkPhase = ''
-          HOME=$(pwd)
           buf lint
         '';
-        dontBuild = true;
+
         installPhase = ''
           touch $out
         '';
       });
-  in rec {
-    devShells = forSystem ({pkgs, ...}: {
-      default = pkgs.mkShell {
+    in rec {
+      devShells.default = pkgs.mkShell {
         packages = with pkgs; [
           git
           buf
@@ -119,47 +81,34 @@
           chmod +x .git/hooks/pre-push
         '';
       };
-    });
 
-    checks = forSystem ({
-      system,
-      pkgs,
-      ...
-    }:
-      pkgs.nur.repos.trev.lib.mkChecks {
-        lint = {
-          src = ./.;
-          nativeBuildInputs = with pkgs; [
-            alejandra
-            prettier
-            action-validator
-            renovate
-          ];
-          checkPhase = ''
-            alejandra -c .
-            prettier --check .
-            action-validator .github/workflows/*
-            action-validator .gitea/workflows/*
-            action-validator .forgejo/workflows/*
-            renovate-config-validator
-          '';
-          installPhase = ''
-            cp -r .cache/buf "$out"
-          '';
-          outputHashAlgo = "sha256";
-          outputHashMode = "recursive";
-          outputHash = "sha256-W3141wtpQ4OHrEV+2soKzSiMsFiCVeSShbpOFUASe84=";
+      checks =
+        pkgs.nur.repos.trev.lib.mkChecks {
+          lint = {
+            src = ./.;
+            deps = with pkgs; [
+              alejandra
+              prettier
+              action-validator
+              renovate
+            ];
+            script = ''
+              alejandra -c .
+              prettier --check .
+              action-validator .github/workflows/*
+              action-validator .gitea/workflows/*
+              action-validator .forgejo/workflows/*
+              renovate-config-validator
+            '';
+          };
+        }
+        // {
+          build = ts-proto;
+          shell = devShells.default;
         };
-      }
-      // {
-        build = ts-proto."${system}";
-        shell = devShells."${system}".default;
-      });
 
-    formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
+      packages.default = ts-proto;
 
-    packages = forSystem ({system, ...}: {
-      default = ts-proto."${system}";
+      formatter = pkgs.alejandra;
     });
-  };
 }
