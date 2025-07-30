@@ -15,12 +15,7 @@
 		},
 		{
 			"matchManagers": ["nix"],
-			"enabled": false
-		},
-		{
-			"matchManagers": ["nix"],
 			"matchUpdateTypes": ["lockFileMaintenance"],
-			"enabled": true,
 			"postUpgradeTasks": {
 				"commands": ["buf dep update", "nix-update --flake --version=skip default"]
 			}
