@@ -12,7 +12,7 @@
 
   inputs = {
     systems.url = "systems";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     utils = {
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
@@ -34,8 +34,25 @@
         inherit system;
         overlays = [nur.overlays.default];
       };
+    in rec {
+      devShells.default = pkgs.mkShell {
+        packages = with pkgs; [
+          git
+          buf
 
-      ts-proto = pkgs.stdenv.mkDerivation (finalAttrs: {
+          # Nix
+          nix-update
+          alejandra
+
+          # Actions
+          prettier
+          action-validator
+          pkgs.nur.repos.trev.renovate
+        ];
+        shellHook = pkgs.nur.repos.trev.shellhook.ref;
+      };
+
+      packages.default = pkgs.stdenv.mkDerivation (finalAttrs: {
         pname = "ts-proto";
         version = "1.0.0";
         src = ./.;
@@ -61,23 +78,6 @@
           touch $out
         '';
       });
-    in rec {
-      devShells.default = pkgs.mkShell {
-        packages = with pkgs; [
-          git
-          buf
-
-          # Nix
-          nix-update
-          alejandra
-
-          # Actions
-          prettier
-          action-validator
-          renovate
-        ];
-        shellHook = pkgs.nur.repos.trev.shellhook.ref;
-      };
 
       checks =
         pkgs.nur.repos.trev.lib.mkChecks {
@@ -87,7 +87,7 @@
               alejandra
               prettier
               action-validator
-              renovate
+              pkgs.nur.repos.trev.renovate
             ];
             script = ''
               alejandra -c .
@@ -100,11 +100,9 @@
           };
         }
         // {
-          build = ts-proto;
+          build = packages.default;
           shell = devShells.default;
         };
-
-      packages.default = ts-proto;
 
       formatter = pkgs.alejandra;
     });
