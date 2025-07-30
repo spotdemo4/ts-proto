@@ -96,6 +96,9 @@
               action-validator .gitea/workflows/*
               action-validator .forgejo/workflows/*
               renovate-config-validator
+              renovate-config-validator .github/renovate-global.json
+              renovate-config-validator .gitea/renovate-global.json
+              renovate-config-validator .forgejo/renovate-global.json
             '';
           };
         }
