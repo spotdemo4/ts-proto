@@ -11,6 +11,6 @@ jobs:
     steps:
       - uses: https://github.com/actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
       - uses: https://github.com/DeterminateSystems/nix-installer-action@90bb610b90bf290cad97484ba341453bd1cbefea # v19
-      - uses: https://github.com/spotdemo4/nix-gitea-cache-action@6c4627e91d22f15c9c34e1a55a0101015fa6a3a7 # v1.0.15
+      - uses: https://github.com/spotdemo4/nix-gitea-cache-action@98163dcea594ce2e8b15cac50ea80ffe0b221025 # v1.1.1
 
       - run: nix develop --accept-flake-config --command flake-checker -f
