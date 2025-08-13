@@ -65,7 +65,7 @@
 
         bufDeps = pkgs.nur.repos.trev.lib.buf.fetchDeps {
           inherit (finalAttrs) pname version src;
-          hash = "sha256-jyUITwCLholh4t8+j9ELDqGoBLzI8J/2u9B1iVLnSiQ=";
+          hash = "sha256-qjjaGBRMA+CcqhOrQ0/5wSTQTazi4MQyDrT04NLREw0=";
         };
 
         dontBuild = true;
