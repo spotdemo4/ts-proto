@@ -42,8 +42,8 @@
 
           # Nix
           alejandra
-          nix-update
           flake-checker
+          pkgs.nur.repos.trev.nix-fix-hash
 
           # Actions
           prettier

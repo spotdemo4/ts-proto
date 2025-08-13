@@ -17,7 +17,7 @@
 			"matchManagers": ["nix"],
 			"matchUpdateTypes": ["lockFileMaintenance"],
 			"postUpgradeTasks": {
-				"commands": ["buf dep update", "nix-update --flake --version=skip default"]
+				"commands": ["buf dep update", "nix-fix-hash"]
 			}
 		},
 		{

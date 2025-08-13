@@ -6,5 +6,5 @@
 	"requireConfig": "optional",
 	"platform": "github",
 	"repositories": ["spotdemo4/ts-proto"],
-	"allowedCommands": ["buf dep update", "nix-update --flake --version=skip default"]
+	"allowedCommands": ["buf dep update", "nix-fix-hash"]
 }
