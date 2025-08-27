@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: https://github.com/actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - uses: https://github.com/DeterminateSystems/nix-installer-action@90bb610b90bf290cad97484ba341453bd1cbefea # v19
-      - uses: https://github.com/spotdemo4/nix-simple-cache-action@e8d4a9947372f2bf7fa2b11ebffebe6db4866038 # v1.4.5
+      - uses: https://github.com/spotdemo4/nix-simple-cache-action@6ac0dd1b576ce784ff8ee87c83a2b08006372601 # v1.4.6
 
       - name: Renovate
         env:
